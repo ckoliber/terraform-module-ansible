@@ -31,8 +31,8 @@ EOF
 %{ endif ~}
 %{ endfor ~}
 
-chmod -f 644 $ROOT/*.crt || :
-chmod -f 600 $ROOT/*.key || :
+chmod -f 644 "$ROOT"/*.crt 2>/dev/null || :
+chmod -f 600 "$ROOT"/*.key 2>/dev/null || :
 
 cat <<-EOF | tee $ROOT/inventory.yml > /dev/null
 %{ for gkey, group in groups ~}
