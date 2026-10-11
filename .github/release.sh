@@ -30,8 +30,14 @@ function is_prerelease() {
 
 if is_release || is_prerelease; then
   VERSION=$(git cliff --unreleased --bumped-version)
-  git cliff --unreleased --tag $VERSION --output CHANGELOG.md
-  gh release create "$VERSION" --title "$VERSION" --target "$(git rev-parse HEAD)" --notes-file CHANGELOG.md
+  CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || true)
+
+  if [ "$VERSION" = "$CURRENT_VERSION" ]; then
+    echo "No releasable commits (feat/fix/breaking change) since $CURRENT_VERSION, skipping release."
+  else
+    git cliff --unreleased --tag $VERSION --output CHANGELOG.md
+    gh release create "$VERSION" --title "$VERSION" --target "$(git rev-parse HEAD)" --notes-file CHANGELOG.md
+  fi
 else
   echo "Not a release or pre-release branch, skipping release."
 fi
