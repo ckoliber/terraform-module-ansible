@@ -1,7 +1,7 @@
 #!/bin/bash
 
 %{ if extra_args != null ~}
-export ROOT=$(mktemp -d)
+ROOT=$(mktemp -d)
 
 %{ for key, val in hosts ~}
 %{ if try(val.connection.cacert, null) != null ~}
@@ -102,5 +102,5 @@ ${gkey}:
 %{ endfor ~}
 EOF
 
-ansible-playbook -i $ROOT/inventory.yml ${extra_args} ${playbook} && rm -Rf $ROOT
+ansible-playbook -i $ROOT/inventory.yml ${extra_args} "$(sed "s|^@/|$(git rev-parse --show-toplevel)/|" <<<"${playbook}")" && rm -Rf $ROOT
 %{ endif ~}
