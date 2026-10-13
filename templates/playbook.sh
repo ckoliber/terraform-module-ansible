@@ -1,7 +1,7 @@
 #!/bin/bash
 
 %{ if extra_args != null ~}
-export ROOT=$(mktemp -d)
+ROOT=$(mktemp -d)
 
 %{ for key, val in hosts ~}
 %{ if try(val.connection.cacert, null) != null ~}
